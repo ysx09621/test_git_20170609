@@ -1,0 +1,57 @@
+void MatrixLed::status_led_tick() {
+
+	if(fast_flash_timer == 0) {
+        fast_flash_timer = FAST_FLASH_PERIOD;
+    }
+    
+    fast_flash_timer--;
+    
+    if(slow_flash_timer == 0) {
+        slow_flash_timer = SLOW_FLASH_PERIOD;
+    }
+    
+    slow_flash_timer--;
+    
+    for(int i = 0; i < sizeof(STATUS_LED_PIN); i++) {
+        bool led_on = true;
+        
+        switch(led_state[i]) {
+            case '0':
+                led_on = true;
+                break;
+                
+            case '1':
+                led_on = false;
+                break;
+                
+            case 'f':
+                led_on = fast_flash_timer > FAST_FLASH_ON_TIME;
+                break;
+                
+            case 's':
+                led_on = slow_flash_timer > SLOW_FLASH_ON_TIME;				
+                break;
+        }
+        
+        digitalWrite(STATUS_LED_PIN[i], led_on);
+    }  
+}
+
+
+CRC16º∆À„∑Ω∑®
+unsigned short crc16(const void *data, unsigned short sizeInByte)
+{
+    unsigned short crc=0;
+    unsigned char *p = (unsigned char *)data;
+
+    while (sizeInByte--)
+    {
+        unsigned char i;
+        crc ^= *p++;
+        for (i = 0; i<8; i++) 
+        {
+            crc = (crc >> 1) ^ ((crc & 0x01) ? 0xA001 : 0);
+        }
+    }
+    return crc;
+}
